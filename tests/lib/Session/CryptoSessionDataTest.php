@@ -50,4 +50,10 @@ class CryptoSessionDataTest extends Session {
 
 		$this->instance = new CryptoSessionData($this->wrappedSession, $this->crypto, 'PASS');
 	}
+
+	protected function testDestructExceptionCatching() {
+		$instance = new CryptoSessionData($this->wrappedSession, $this->crypto, 'PASS');
+		$this->wrappedSession->expects($this->once())->method('set')->willThrowException($e)
+		$instance->__destruct();
+	}
 }
