@@ -171,10 +171,12 @@ if (isset($_POST['action']) && isset($_POST['itemType']) && isset($_POST['itemSo
 			]);
 
 			// read post variables
-			$link = (string)$_POST['link'];
-			$file = (string)$_POST['file'];
-			$to_address = (string)$_POST['toaddress'];
-			$emailBody = null;
+			$link       = (string)$_POST['link'];
+			$file       = (string)$_POST['file'];
+			$to_address = (string)$_POST['toAddress'];
+			$to_bcc     = ((string)$_POST['bccSelf']) ? array('bcc' => \OC::$server->getUserSession()->getUser()->getEMailAddress()) : false;
+			$emailBody  = null;
+
 			if (isset($_POST['emailBody'])) {
 				$emailBody = trim((string)$_POST['emailBody']);
 			}
@@ -213,7 +215,7 @@ if (isset($_POST['action']) && isset($_POST['itemType']) && isset($_POST['itemSo
 				$textBody = strip_tags($emailBody);
 			}
 
-			$result = $mailNotification->sendLinkShareMailFromBody($to_address, $subject, $htmlBody, $textBody);
+			$result = $mailNotification->sendLinkShareMailFromBody($to_address, $subject, $htmlBody, $textBody, $to_bcc);
 
 			if(empty($result)) {
 				// Get the token from the link
@@ -347,12 +349,12 @@ if (isset($_POST['action']) && isset($_POST['itemType']) && isset($_POST['itemSo
 				$sharedGroups = [];
 				if (isset($_GET['itemShares'])) {
 					if (isset($_GET['itemShares'][OCP\Share::SHARE_TYPE_USER]) &&
-					    is_array($_GET['itemShares'][OCP\Share::SHARE_TYPE_USER])) {
+						is_array($_GET['itemShares'][OCP\Share::SHARE_TYPE_USER])) {
 						$sharedUsers = $_GET['itemShares'][OCP\Share::SHARE_TYPE_USER];
 					}
 
 					if (isset($_GET['itemShares'][OCP\Share::SHARE_TYPE_GROUP]) &&
-					    is_array($_GET['itemShares'][OCP\Share::SHARE_TYPE_GROUP])) {
+						is_array($_GET['itemShares'][OCP\Share::SHARE_TYPE_GROUP])) {
 						$sharedGroups = $_GET['itemShares'][OCP\Share::SHARE_TYPE_GROUP];
 					}
 				}
