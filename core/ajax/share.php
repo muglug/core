@@ -171,18 +171,21 @@ if (isset($_POST['action']) && isset($_POST['itemType']) && isset($_POST['itemSo
 			]);
 
 			// read post variables
-			$link       = (string)$_POST['link'];
-			$file       = (string)$_POST['file'];
-			$to_address = (string)$_POST['toAddress'];
-			$to_bcc     = ((string)$_POST['bccSelf']) ? array('bcc' => \OC::$server->getUserSession()->getUser()->getEMailAddress()) : false;
-			$emailBody  = null;
+			$link = (string)$_POST['link'];
+			$file = (string)$_POST['file'];
+			$toAddress = (string)$_POST['toAddress'];
+			$options = array();
+			$emailBody = null;
 
 			if (isset($_POST['emailBody'])) {
 				$emailBody = trim((string)$_POST['emailBody']);
 			}
 
-			$l10n = \OC::$server->getL10N('lib');
+			if (isset($_POST['bccSelf'])) {
+				$options['bcc'] = \OC::$server->getUserSession()->getUser()->getEMailAddress();
+			}
 
+			$l10n = \OC::$server->getL10N('lib');
 
 			$mailNotification = new \OC\Share\MailNotifications(
 				\OC::$server->getUserSession()->getUser(),
@@ -215,7 +218,7 @@ if (isset($_POST['action']) && isset($_POST['itemType']) && isset($_POST['itemSo
 				$textBody = strip_tags($emailBody);
 			}
 
-			$result = $mailNotification->sendLinkShareMailFromBody($to_address, $subject, $htmlBody, $textBody, $to_bcc);
+			$result = $mailNotification->sendLinkShareMailFromBody($toAddress, $subject, $htmlBody, $textBody, $options);
 
 			if(empty($result)) {
 				// Get the token from the link
@@ -243,7 +246,7 @@ if (isset($_POST['action']) && isset($_POST['itemType']) && isset($_POST['itemSo
 								->setAuthor($currentUser)
 								->setAffectedUser($currentUser)
 								->setObject('files', $fileId, $path)
-								->setSubject(\OCA\Files_Sharing\Activity::SUBJECT_SHARED_EMAIL, [$path, $to_address]);
+								->setSubject(\OCA\Files_Sharing\Activity::SUBJECT_SHARED_EMAIL, [$path, $toAddress]);
 							\OC::$server->getActivityManager()->publish($event);
 						}
 					}

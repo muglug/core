@@ -107,8 +107,6 @@
 				expiration  : this.model.get('expireDate') || ''
 			};
 
-			console.log(params);
-
 			$.post(
 				OC.generateUrl('core/ajax/share.php'), params,
 				function(result) {
