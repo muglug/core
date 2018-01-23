@@ -181,7 +181,7 @@ if (isset($_POST['action']) && isset($_POST['itemType']) && isset($_POST['itemSo
 				$emailBody = trim((string)$_POST['emailBody']);
 			}
 
-			if (isset($_POST['bccSelf'])) {
+			if (isset($_POST['bccSelf']) && $_POST['bccSelf'] === 'true') {
 				$options['bcc'] = \OC::$server->getUserSession()->getUser()->getEMailAddress();
 			}
 
