@@ -137,9 +137,6 @@ class SimpleContainer extends Container implements IContainer {
 	 */
 	public function registerService($name, Closure $closure, $shared = true) {
 		$name = $this->sanitizeName($name);
-		if (isset($this[$name]))  {
-			unset($this[$name]);
-		}
 		if ($shared) {
 			$this[$name] = $closure;
 		} else {
@@ -165,7 +162,11 @@ class SimpleContainer extends Container implements IContainer {
 	 * @return string
 	 */
 	protected function sanitizeName($name) {
-		return ltrim($name, '\\');
+		if ($name[0]==='\\') {
+			return ltrim($name, '\\'); // this is expensive ...
+		} else {
+			return $name;
+		}
 	}
 
 }
