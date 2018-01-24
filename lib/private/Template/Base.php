@@ -85,7 +85,11 @@ class Base {
 		$templateDirectories = [];
 		// Templates dir from the active theme first
 		if ($theme->getDirectory() !== '') {
-			$templateDirectories[] = $serverRoot . '/' . $theme->getDirectory() . '/apps/' . $app . '/templates/';
+			$baseDirectory = $theme->getBaseDirectory();
+			if ($baseDirectory === ''){
+				$baseDirectory = $serverRoot;
+			}
+			$templateDirectories[] = $baseDirectory . '/' . $theme->getDirectory() . '/apps/' . $app . '/templates/';
 		}
 
 		// Templates dir from the app dir then
@@ -102,7 +106,11 @@ class Base {
 	 * @return string[]
 	 */
 	protected function getCoreTemplateDirs(ITheme $theme, $serverRoot) {
-		return $this->getTemplateDirs($theme, $serverRoot, '/core/templates/');
+		$baseDirectory = $theme->getBaseDirectory();
+		if ($baseDirectory === ''){
+			$baseDirectory = $serverRoot;
+		}
+		return $this->getTemplateDirs($theme, $baseDirectory, '/core/templates/');
 	}
 
 	/**
@@ -111,7 +119,11 @@ class Base {
 	 * @return string[]
 	 */
 	protected function getSettingsTemplateDirs(ITheme $theme, $serverRoot) {
-		return $this->getTemplateDirs($theme, $serverRoot, '/settings/templates/');
+		$baseDirectory = $theme->getBaseDirectory();
+		if ($baseDirectory === ''){
+			$baseDirectory = $serverRoot;
+		}
+		return $this->getTemplateDirs($theme, $baseDirectory, '/settings/templates/');
 	}
 
 	/**
